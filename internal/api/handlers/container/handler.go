@@ -1,15 +1,18 @@
 package container
 
 import (
+	"podium/internal/runtime"
 	"podium/internal/store"
 )
 
 type Handler struct {
-	store *store.BoltStore
+	store   *store.BoltStore
+	runtime runtime.Runtime
 }
 
-func NewHandler(store *store.BoltStore) *Handler {
+func NewHandler(store *store.BoltStore, runtime runtime.Runtime) *Handler {
 	return &Handler{
-		store: store,
+		store:   store,
+		runtime: runtime,
 	}
 }
