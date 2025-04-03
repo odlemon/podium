@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/odlemon/podium/internal/models"
+	"podium/internal/models"
 	bolt "go.etcd.io/bbolt"
 )
 

@@ -1,0 +1,25 @@
+# Go-related ignores
+/bin/
+/pkg/
+*.exe
+*.out
+*.test
+*.log
+*.tmp
+*.swp
+
+# BoltDB database file
+*.db
+podium.db
+
+# IDE and editor files
+.idea/
+.vscode/
+*.iml
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Git-related
+.git/

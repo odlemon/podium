@@ -1,4 +1,4 @@
-module github.com/odlemon/podium
+module podium
 
 go 1.24.1
 
