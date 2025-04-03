@@ -1,10 +1,11 @@
 package api
 
 import (
-	"encoding/json"
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"podium/internal/api/handlers"
+	"podium/internal/api/handlers/container"
 	"podium/internal/store"
 )
 
@@ -23,7 +24,16 @@ func NewServer(store *store.BoltStore) *Server {
 }
 
 func (s *Server) setupRoutes() {
-	s.router.HandleFunc("/health", s.handleHealth).Methods("GET")
+
+	s.router.HandleFunc("/health", handlers.NewHealthHandler().HandleHealth).Methods("GET")
+	
+	containerHandler := container.NewHandler(s.store)
+	
+	s.router.HandleFunc("/api/containers", containerHandler.HandleList).Methods("GET")
+	s.router.HandleFunc("/api/containers", containerHandler.HandleCreate).Methods("POST")
+	s.router.HandleFunc("/api/containers/{id}", containerHandler.HandleGet).Methods("GET")
+	s.router.HandleFunc("/api/containers/{id}", containerHandler.HandleUpdate).Methods("PUT")
+	s.router.HandleFunc("/api/containers/{id}", containerHandler.HandleDelete).Methods("DELETE")
 }
 
 func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -32,14 +42,4 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 func (s *Server) Start(addr string) error {
 	return http.ListenAndServe(addr, s.router)
-}
-
-func (s *Server) handleHealth(w http.ResponseWriter, r *http.Request) {
-	response := map[string]string{
-		"status": "ok",
-		"name":   "Podium",
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(response)
 }
