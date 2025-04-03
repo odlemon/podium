@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"strings"
 	"time"
 
 	"github.com/docker/docker/api/types"
@@ -57,6 +56,10 @@ func (d *DockerRuntime) CreateContainer(ctx context.Context, spec models.Contain
 		env = append(env, fmt.Sprintf("%s=%s", k, v))
 	}
 
+	labels := map[string]string{
+		"podium.container.id": spec.ID,
+	}
+
 	resources := container.Resources{}
 	if spec.Resources.CPULimit > 0 {
 		resources.NanoCPUs = int64(spec.Resources.CPULimit * 1e9)
@@ -82,6 +85,7 @@ func (d *DockerRuntime) CreateContainer(ctx context.Context, spec models.Contain
 		Cmd:          spec.Command,
 		Env:          env,
 		ExposedPorts: exposedPorts,
+		Labels:       labels,
 	}
 
 	hostConfig := &container.HostConfig{
@@ -96,14 +100,10 @@ func (d *DockerRuntime) CreateContainer(ctx context.Context, spec models.Contain
 		hostConfig,
 		nil,
 		nil,
-		spec.Name,
+		spec.ID, 
 	)
 	if err != nil {
 		return fmt.Errorf("failed to create container: %w", err)
-	}
-
-	if resp.ID != spec.ID {
-		return fmt.Errorf("container ID mismatch: expected %s, got %s", spec.ID, resp.ID)
 	}
 
 	return nil
@@ -155,18 +155,18 @@ func (d *DockerRuntime) GetContainerLogs(ctx context.Context, id string) (string
 	options := types.ContainerLogsOptions{
 		ShowStdout: true,
 		ShowStderr: true,
-		Tail:       "100", 
+		Tail:       "100",
 	}
 
 	logs, err := d.client.ContainerLogs(ctx, id, options)
 	if err != nil {
-		return "", fmt.Errorf("failed to get container logs: %w", err)
+		return "", fmt.Errorf("failed to get container logs: %v", err)
 	}
 	defer logs.Close()
 
 	logBytes, err := io.ReadAll(logs)
 	if err != nil {
-		return "", fmt.Errorf("failed to read container logs: %w", err)
+		return "", fmt.Errorf("failed to read container logs: %v", err)
 	}
 
 	return string(logBytes), nil
