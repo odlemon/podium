@@ -32,13 +32,20 @@ func (h *Handler) HandleCreate(w http.ResponseWriter, r *http.Request) {
 		Ports:         req.Ports,
 		Resources:     req.Resources,
 		State:         models.ContainerStatePending,
-		NodeID:        "local", // only supports  single node
+		NodeID:        "local", // For now, we only support a single node
 		CreatedAt:     time.Now(),
 		RestartPolicy: req.RestartPolicy,
 	}
 
+	if err := h.runtime.CreateContainer(r.Context(), container); err != nil {
+		handlers.RespondWithError(w, http.StatusInternalServerError, fmt.Sprintf("Failed to create container in Docker: %v", err))
+		return
+	}
+
 	if err := h.store.CreateContainer(container); err != nil {
-		handlers.RespondWithError(w, http.StatusInternalServerError, fmt.Sprintf("Failed to create container: %v", err))
+	
+		h.runtime.DeleteContainer(r.Context(), container.ID)
+		handlers.RespondWithError(w, http.StatusInternalServerError, fmt.Sprintf("Failed to store container: %v", err))
 		return
 	}
 
