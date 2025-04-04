@@ -8,6 +8,7 @@ import (
 	"syscall"
 
 	"podium/internal/api"
+	"podium/internal/runtime"
 	"podium/internal/store"
 )
 
@@ -22,7 +23,13 @@ func main() {
 
 	fmt.Println("BoltDB store initialized successfully")
 
-	server := api.NewServer(boltStore)
+	dockerRuntime, err := runtime.NewDockerRuntime()
+	if err != nil {
+		log.Fatalf("Failed to create Docker runtime: %v", err)
+	}
+	fmt.Println("Docker runtime initialized successfully")
+
+	server := api.NewServer(boltStore, dockerRuntime)
 
 	sigChan := make(chan os.Signal, 1)
 	signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM)
