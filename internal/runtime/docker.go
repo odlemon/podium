@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"os/exec"
 	"time"
 	
 	"github.com/docker/docker/api/types/container"
@@ -42,11 +43,32 @@ func NewDockerRuntime() (*DockerRuntime, error) {
 	}, nil
 }
 
+func (d *DockerRuntime) pullImageWithExec(imageName string) error {
+	log.Printf("Pulling image using docker CLI: %s", imageName)
+	
+	cmd := exec.Command("docker", "pull", imageName)
+	output, err := cmd.CombinedOutput()
+	if err != nil {
+		log.Printf("Error pulling image: %v, output: %s", err, string(output))
+		return fmt.Errorf("failed to pull image: %w", err)
+	}
+	
+	log.Printf("Image pull output: %s", string(output))
+	log.Printf("Image pulled successfully: %s", imageName)
+	return nil
+}
+
 func (d *DockerRuntime) CreateContainer(ctx context.Context, spec models.Container) error {
 	log.Printf("Creating container: name=%s, image=%s", spec.Name, spec.Image)
 	
-	ctx, cancel := context.WithTimeout(ctx, 60*time.Second)
+	// Increase timeout to 5 minutes
+	ctx, cancel := context.WithTimeout(ctx, 5*time.Minute)
 	defer cancel()
+	
+	// Pull the image using docker CLI
+	if err := d.pullImageWithExec(spec.Image); err != nil {
+		return fmt.Errorf("failed to pull image: %w", err)
+	}
 	
 	log.Println("Setting up port bindings")
 	portBindings := nat.PortMap{}
@@ -130,6 +152,9 @@ func (d *DockerRuntime) CreateContainer(ctx context.Context, spec models.Contain
 	)
 	if err != nil {
 		log.Printf("Error creating container: %v", err)
+		if ctx.Err() == context.DeadlineExceeded {
+			log.Printf("Operation timed out - consider increasing the timeout")
+		}
 		return fmt.Errorf("failed to create container: %w", err)
 	}
 
