@@ -37,6 +37,9 @@ type Container struct {
 	StartedAt     *time.Time           `json:"startedAt,omitempty"`
 	FinishedAt    *time.Time           `json:"finishedAt,omitempty"`
 	RestartPolicy string               `json:"restartPolicy"`
+	HealthCheck *HealthCheck `json:"healthCheck,omitempty"`
+	Health      HealthState  `json:"health,omitempty"`
+	RestartCount int         `json:"restartCount"`
 }
 
 type ContainerCreateRequest struct {
@@ -47,4 +50,5 @@ type ContainerCreateRequest struct {
 	Ports         []PortMapping        `json:"ports,omitempty"`
 	Resources     ResourceRequirements `json:"resources"`
 	RestartPolicy string               `json:"restartPolicy"`
+	HealthCheck *HealthCheck `json:"healthCheck,omitempty"`
 }

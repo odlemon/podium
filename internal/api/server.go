@@ -28,7 +28,6 @@ func NewServer(store *store.BoltStore, runtime runtime.Runtime) *Server {
 }
 
 func (s *Server) setupRoutes() {
-
 	s.router.HandleFunc("/health", handlers.NewHealthHandler().HandleHealth).Methods("GET")
 	
 	containerHandler := container.NewHandler(s.store, s.runtime)
@@ -41,6 +40,7 @@ func (s *Server) setupRoutes() {
 	s.router.HandleFunc("/api/containers/{id}/start", containerHandler.HandleStart).Methods("POST")
 	s.router.HandleFunc("/api/containers/{id}/stop", containerHandler.HandleStop).Methods("POST")
 	s.router.HandleFunc("/api/containers/{id}/logs", containerHandler.HandleLogs).Methods("GET")
+	s.router.HandleFunc("/api/containers/{id}/health", containerHandler.HandleHealth).Methods("GET")
 
 	service.RegisterRoutes(s.router, s.store, s.runtime)
 }
