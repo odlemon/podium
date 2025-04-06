@@ -106,3 +106,123 @@ func (s *BoltStore) DeleteContainer(id string) error {
 		return b.Delete([]byte(id))
 	})
 }
+
+// Add these functions to your existing boltdb.go file
+
+func (s *BoltStore) CreateService(service models.Service) error {
+	return s.db.Update(func(tx *bolt.Tx) error {
+		b, err := tx.CreateBucketIfNotExists([]byte("services"))
+		if err != nil {
+			return fmt.Errorf("failed to create services bucket: %w", err)
+		}
+		
+		data, err := json.Marshal(service)
+		if err != nil {
+			return fmt.Errorf("failed to marshal service: %w", err)
+		}
+		
+		return b.Put([]byte(service.ID), data)
+	})
+}
+
+func (s *BoltStore) GetService(id string) (models.Service, error) {
+	var service models.Service
+	
+	err := s.db.View(func(tx *bolt.Tx) error {
+		b := tx.Bucket([]byte("services"))
+		if b == nil {
+			return fmt.Errorf("services bucket not found")
+		}
+		
+		data := b.Get([]byte(id))
+		if data == nil {
+			return fmt.Errorf("service not found: %s", id)
+		}
+		
+		return json.Unmarshal(data, &service)
+	})
+	
+	return service, err
+}
+
+func (s *BoltStore) UpdateService(service models.Service) error {
+	return s.db.Update(func(tx *bolt.Tx) error {
+		b := tx.Bucket([]byte("services"))
+		if b == nil {
+			return fmt.Errorf("services bucket not found")
+		}
+		
+		data, err := json.Marshal(service)
+		if err != nil {
+			return fmt.Errorf("failed to marshal service: %w", err)
+		}
+		
+		return b.Put([]byte(service.ID), data)
+	})
+}
+
+func (s *BoltStore) DeleteService(id string) error {
+	return s.db.Update(func(tx *bolt.Tx) error {
+		b := tx.Bucket([]byte("services"))
+		if b == nil {
+			return fmt.Errorf("services bucket not found")
+		}
+		
+		return b.Delete([]byte(id))
+	})
+}
+
+func (s *BoltStore) ListServices() ([]models.Service, error) {
+	var services []models.Service
+	
+	err := s.db.View(func(tx *bolt.Tx) error {
+		b := tx.Bucket([]byte("services"))
+		if b == nil {
+			return nil
+		}
+		
+		return b.ForEach(func(k, v []byte) error {
+			var service models.Service
+			if err := json.Unmarshal(v, &service); err != nil {
+				return fmt.Errorf("failed to unmarshal service: %w", err)
+			}
+			
+			services = append(services, service)
+			return nil
+		})
+	})
+	
+	return services, err
+}
+
+func (s *BoltStore) GetServiceByName(name string) (models.Service, error) {
+	var service models.Service
+	var found bool
+	
+	err := s.db.View(func(tx *bolt.Tx) error {
+		b := tx.Bucket([]byte("services"))
+		if b == nil {
+			return fmt.Errorf("services bucket not found")
+		}
+		
+		return b.ForEach(func(k, v []byte) error {
+			var s models.Service
+			if err := json.Unmarshal(v, &s); err != nil {
+				return fmt.Errorf("failed to unmarshal service: %w", err)
+			}
+			
+			if s.Name == name {
+				service = s
+				found = true
+				return nil
+			}
+			return nil
+		})
+	})
+	
+	if !found {
+		return service, fmt.Errorf("service not found: %s", name)
+	}
+	
+	return service, err
+}

@@ -1,4 +1,4 @@
-package container
+package service
 
 import (
 	"fmt"
@@ -11,7 +11,7 @@ import (
 )
 
 func (h *Handler) HandleList(w http.ResponseWriter, r *http.Request) {
-	log.Println("Received request to list containers")
+	log.Println("Received request to list services")
 	
 	query := r.URL.Query()
 	stateFilter := query.Get("state")
@@ -25,40 +25,40 @@ func (h *Handler) HandleList(w http.ResponseWriter, r *http.Request) {
 	if limitStr != "" {
 		limit, err = strconv.Atoi(limitStr)
 		if err != nil || limit < 1 {
-			limit = 100 
+			limit = 100
 		}
 	} else {
-		limit = 100 
+		limit = 100
 	}
 	
 	if offsetStr != "" {
 		offset, err = strconv.Atoi(offsetStr)
 		if err != nil || offset < 0 {
-			offset = 0 
+			offset = 0
 		}
 	}
 	
-	containers, err := h.store.ListContainers()
+	services, err := h.store.ListServices()
 	if err != nil {
-		handlers.RespondWithError(w, http.StatusInternalServerError, fmt.Sprintf("Failed to list containers: %v", err))
-		log.Printf("Error listing containers from database: %v", err)
+		handlers.RespondWithError(w, http.StatusInternalServerError, fmt.Sprintf("Failed to list services: %v", err))
+		log.Printf("Error listing services from database: %v", err)
 		return
 	}
 	
-	var filteredContainers []models.Container
+	var filteredServices []models.Service
 	
 	if stateFilter != "" {
-		log.Printf("Filtering containers by state: %s", stateFilter)
-		for _, container := range containers {
-			if string(container.State) == stateFilter {
-				filteredContainers = append(filteredContainers, container)
+		log.Printf("Filtering services by state: %s", stateFilter)
+		for _, service := range services {
+			if string(service.State) == stateFilter {
+				filteredServices = append(filteredServices, service)
 			}
 		}
 	} else {
-		filteredContainers = containers
+		filteredServices = services
 	}
 	
-	totalCount := len(filteredContainers)
+	totalCount := len(filteredServices)
 	
 	if offset >= totalCount {
 		offset = 0
@@ -69,20 +69,20 @@ func (h *Handler) HandleList(w http.ResponseWriter, r *http.Request) {
 		endIndex = totalCount
 	}
 	
-	var paginatedContainers []models.Container
+	var paginatedServices []models.Service
 	if offset < totalCount {
-		paginatedContainers = filteredContainers[offset:endIndex]
+		paginatedServices = filteredServices[offset:endIndex]
 	} else {
-		paginatedContainers = []models.Container{}
+		paginatedServices = []models.Service{}
 	}
 	
 	response := map[string]interface{}{
-		"items":      paginatedContainers,
+		"items":      paginatedServices,
 		"totalCount": totalCount,
 		"limit":      limit,
 		"offset":     offset,
 	}
 	
 	handlers.RespondWithJSON(w, http.StatusOK, response)
-	log.Printf("Listed %d containers (filtered from %d total)", len(paginatedContainers), totalCount)
+	log.Printf("Listed %d services (filtered from %d total)", len(paginatedServices), totalCount)
 }

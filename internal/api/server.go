@@ -8,6 +8,7 @@ import (
 	"podium/internal/api/handlers/container"
 	"podium/internal/runtime"
 	"podium/internal/store"
+	"podium/internal/api/handlers/service"
 )
 
 type Server struct {
@@ -40,6 +41,8 @@ func (s *Server) setupRoutes() {
 	s.router.HandleFunc("/api/containers/{id}/start", containerHandler.HandleStart).Methods("POST")
 	s.router.HandleFunc("/api/containers/{id}/stop", containerHandler.HandleStop).Methods("POST")
 	s.router.HandleFunc("/api/containers/{id}/logs", containerHandler.HandleLogs).Methods("GET")
+
+	service.RegisterRoutes(s.router, s.store, s.runtime)
 }
 
 func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
