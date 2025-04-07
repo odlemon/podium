@@ -1,7 +1,7 @@
 <h1 align="center">Podium</h1>
 
 <p align="center">
-  <strong>A lightweight container management system with health checking and automatic recovery</strong>
+  <strong>A lightweight container orchestration tool with health checking and automatic recovery</strong>
 </p>
 
 <p align="center">
@@ -12,7 +12,6 @@
   <a href="#configuration">Configuration</a> •
   <a href="#roadmap">Roadmap</a> •
   <a href="#contributing">Contributing</a> •
-  <a href="#license">License</a>
 </p>
 
 ---
@@ -30,24 +29,24 @@ Podium is a container management system built in Go that provides:
 
 ## Why Podium
 
-While tools like Kubernetes provide comprehensive container orchestration, they can be complex and resource-intensive for simpler use cases. Podium aims to surpass Kubernetes in specific areas by focusing on simplicity, developer experience, and specialized use cases.
+While tools like Kubernetes provide comprehensive container orchestration, they can be complex and resource intensive for simpler use cases. Podium aims to surpass Kubernetes in specific areas by focusing on simplicity, developer experience, and specialized use cases.
 
 ### "Kubernetes-Simple" Developer Experience
 Podium eliminates the steep learning curve of Kubernetes with:
 - Drastically simplified configuration (80% less verbose than Kubernetes)
-- One-command deployments that "just work" with sensible defaults
+- One command deployments that "just work" with sensible defaults
 - Clear, intuitive CLI feedback showing exactly what's happening
 - No need to understand complex concepts like pods, deployments, services, etc.
 
 ### Application-Level Health Monitoring
 Beyond basic container health checks, Podium provides:
 - Deep insights into application health, not just container status
-- Business-relevant metrics for truly understanding application performance
+- Business relevant metrics for truly understanding application performance
 - Intelligent recovery actions tailored to specific failure scenarios
-- Simple health dashboards for at-a-glance monitoring
+- Simple health dashboards for at a glance monitoring
 
 ### Single-Node Excellence
-Podium is optimized for the common case of single-server deployments:
+Podium is optimized for the common case of single server deployments:
 - Significantly lower resource overhead than Kubernetes
 - No complex networking required
 - Simple backup and restore capabilities
@@ -205,6 +204,3 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
