@@ -30,14 +30,35 @@ Podium is a container management system built in Go that provides:
 
 ## Why Podium
 
-While tools like Kubernetes provide comprehensive container orchestration, they can be complex and resource-intensive for simpler use cases. Podium fills the gap between running containers manually with Docker and deploying a full Kubernetes cluster.
+While tools like Kubernetes provide comprehensive container orchestration, they can be complex and resource-intensive for simpler use cases. Podium aims to surpass Kubernetes in specific areas by focusing on simplicity, developer experience, and specialized use cases.
+
+### "Kubernetes-Simple" Developer Experience
+Podium eliminates the steep learning curve of Kubernetes with:
+- Drastically simplified configuration (80% less verbose than Kubernetes)
+- One-command deployments that "just work" with sensible defaults
+- Clear, intuitive CLI feedback showing exactly what's happening
+- No need to understand complex concepts like pods, deployments, services, etc.
+
+### Application-Level Health Monitoring
+Beyond basic container health checks, Podium provides:
+- Deep insights into application health, not just container status
+- Business-relevant metrics for truly understanding application performance
+- Intelligent recovery actions tailored to specific failure scenarios
+- Simple health dashboards for at-a-glance monitoring
+
+### Single-Node Excellence
+Podium is optimized for the common case of single-server deployments:
+- Significantly lower resource overhead than Kubernetes
+- No complex networking required
+- Simple backup and restore capabilities
+- Perfect for small to medium applications that don't need multi-node clusters
 
 Podium is ideal for:
-
 - Development environments where Kubernetes is overkill
 - Small production deployments with basic health checking needs
 - Edge computing scenarios with limited resources
 - Learning container management concepts without the complexity of larger systems
+- Teams that want to focus on building applications, not managing infrastructure
 
 ## Installation
 
@@ -145,17 +166,34 @@ Podium can be configured using command-line flags or environment variables:
 - ✅ Restart policies for unhealthy containers
 - ✅ BoltDB storage for container configurations
 
-### Upcoming Features
+### Short-Term Goals
 
-- [ ] Volume management
-- [ ] Network management
-- [ ] Container resource limits
+- [ ] Simplified YAML configuration format
+- [ ] One-command deployment CLI (`podium deploy app.yaml`)
+- [ ] Enhanced application-level health monitoring
+- [ ] Basic health dashboards
+- [ ] Resource usage monitoring and limits
 - [ ] Container logs streaming
+- [ ] Volume management
+
+### Medium-Term Goals
+
+- [ ] Advanced health metrics with business-relevant indicators
+- [ ] Intelligent recovery actions beyond simple restarts
+- [ ] Network management and service discovery
+- [ ] Simple backup and restore functionality
 - [ ] Authentication and authorization
-- [ ] Multi-node support
-- [ ] Metrics collection and visualization
 - [ ] Webhook notifications for container events
+
+### Long-Term Vision 
+
+- [ ] Complete "Kubernetes-Simple" developer experience
+- [ ] Comprehensive application health insights
+- [ ] Single-node excellence with optimized resource usage
 - [ ] Support for Docker Compose-like configuration
+- [ ] Multi-node support (optional, for growth scenarios)
+- [ ] Metrics collection and visualization
+- [ ] Edge computing optimizations
 
 ## Contributing
 
@@ -166,3 +204,7 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 3. Commit your changes (`git commit -m 'Add some amazing feature'`)
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
