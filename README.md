@@ -1,7 +1,3 @@
-<p align="center">
-  <img src="docs/assets/podium-logo.png" alt="Podium Logo" width="200" height="200" />
-</p>
-
 <h1 align="center">Podium</h1>
 
 <p align="center">
@@ -70,6 +66,21 @@ go build -o podium cmd/server/main.go
 go install github.com/yourusername/podium/cmd/server@latest
 ```
 
+### Platform-Specific Notes
+
+The installation process is similar across platforms (Windows, macOS, Linux), but there are a few differences to note:
+
+**Linux**:
+- Docker socket is typically at: `unix:///var/run/docker.sock`
+
+**macOS**:
+- Docker Desktop for Mac uses the same socket path as Linux: `unix:///var/run/docker.sock`
+
+**Windows**:
+- If using Docker Desktop with WSL2 backend, use the Linux socket path
+- If using Docker Desktop with Hyper-V backend, use: `npipe:////./pipe/docker_engine`
+- You may need to adjust the `--docker-host` flag accordingly
+
 ## Usage
 
 ### Starting the Server
@@ -129,14 +140,13 @@ Podium can be configured using command-line flags or environment variables:
 
 ### Current Focus
 
-- [x] Basic container management (create, start, stop, remove)
-- [x] Health checking system
-- [x] Restart policies for unhealthy containers
-- [x] BoltDB storage for container configurations
+- ✅ Basic container management (create, start, stop, remove)
+- ✅ Health checking system
+- ✅ Restart policies for unhealthy containers
+- ✅ BoltDB storage for container configurations
 
 ### Upcoming Features
 
-- [ ] Web UI for container management
 - [ ] Volume management
 - [ ] Network management
 - [ ] Container resource limits
@@ -156,7 +166,3 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 3. Commit your changes (`git commit -m 'Add some amazing feature'`)
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
