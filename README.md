@@ -71,7 +71,7 @@ Podium is ideal for:
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/podium.git
+git clone https://github.com/odlemon/podium.git
 cd podium
 
 # Build the binary
