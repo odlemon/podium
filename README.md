@@ -1,7 +1,7 @@
 <h1 align="center">Podium</h1>
 
 <p align="center">
-  <strong>A lightweight container orchestration tool with health checking and automatic recovery</strong>
+  <strong>A lightweight container orchestration system with health checking and automatic recovery</strong>
 </p>
 
 <p align="center">
@@ -29,21 +29,21 @@ Podium is a container management system built in Go that provides:
 
 ## Why Podium
 
-While tools like Kubernetes provide comprehensive container orchestration, they can be complex and resource intensive for simpler use cases. Podium aims to surpass Kubernetes in specific areas by focusing on simplicity, developer experience, and specialized use cases.
+While tools like Kubernetes provide comprehensive container orchestration, they can be complex and resource-intensive for simpler use cases. Podium aims to surpass Kubernetes in specific areas by focusing on simplicity, developer experience, and specialized use cases.
 
 ### "Kubernetes-Simple" Developer Experience
 Podium eliminates the steep learning curve of Kubernetes with:
 - Drastically simplified configuration (80% less verbose than Kubernetes)
-- One command deployments that "just work" with sensible defaults
+- One-command deployments that "just work" with sensible defaults
 - Clear, intuitive CLI feedback showing exactly what's happening
 - No need to understand complex concepts like pods, deployments, services, etc.
 
 ### Application-Level Health Monitoring
 Beyond basic container health checks, Podium provides:
 - Deep insights into application health, not just container status
-- Business relevant metrics for truly understanding application performance
+- Business-relevant metrics for truly understanding application performance
 - Intelligent recovery actions tailored to specific failure scenarios
-- Simple health dashboards for at a glance monitoring
+- Simple health dashboards for at-a-glance monitoring
 
 ### Single-Node Excellence
 Podium is optimized for the common case of single server deployments:
@@ -65,6 +65,7 @@ Podium is ideal for:
 
 - Go 1.16 or higher
 - Docker
+- Make
 
 ### From Source
 
@@ -74,16 +75,22 @@ git clone https://github.com/odlemon/podium.git
 cd podium
 
 # Build the binary
-go build -o podium cmd/server/main.go
+make build
 
 # Run the server
-./podium
+make run
+
+# Run tests
+make test
+
+# Clean up build artifacts
+make clean
 ```
 
 ### Using Go Install
 
 ```bash
-go install github.com/yourusername/podium/cmd/server@latest
+go install github.com/odlemon/podium/cmd/server@latest
 ```
 
 ### Platform-Specific Notes
@@ -100,6 +107,7 @@ The installation process is similar across platforms (Windows, macOS, Linux), bu
 - If using Docker Desktop with WSL2 backend, use the Linux socket path
 - If using Docker Desktop with Hyper-V backend, use: `npipe:////./pipe/docker_engine`
 - You may need to adjust the `--docker-host` flag accordingly
+- Make sure to install Make via MinGW, Chocolatey, or WSL
 
 ## Usage
 
@@ -165,7 +173,7 @@ Podium can be configured using command-line flags or environment variables:
 - ✅ Restart policies for unhealthy containers
 - ✅ BoltDB storage for container configurations
 
-### Short-Term Goals
+### Short-Term Goals (Next 3-6 months)
 
 - [ ] Simplified YAML configuration format
 - [ ] One-command deployment CLI (`podium deploy app.yaml`)
@@ -174,8 +182,9 @@ Podium can be configured using command-line flags or environment variables:
 - [ ] Resource usage monitoring and limits
 - [ ] Container logs streaming
 - [ ] Volume management
+- [ ] Service support and basic networking
 
-### Medium-Term Goals
+### Medium-Term Goals (6-12 months)
 
 - [ ] Advanced health metrics with business-relevant indicators
 - [ ] Intelligent recovery actions beyond simple restarts
@@ -184,7 +193,7 @@ Podium can be configured using command-line flags or environment variables:
 - [ ] Authentication and authorization
 - [ ] Webhook notifications for container events
 
-### Long-Term Vision 
+### Long-Term Vision (1+ years)
 
 - [ ] Complete "Kubernetes-Simple" developer experience
 - [ ] Comprehensive application health insights
