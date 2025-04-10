@@ -139,7 +139,7 @@ func (w *Worker) restartContainer(container models.Container) {
 			container.ID, container.RestartCount, w.maxRestarts)
 		return
 	}
-	
+		
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	err := w.runtime.StopContainer(ctx, container.ID)
 	cancel()
@@ -147,7 +147,7 @@ func (w *Worker) restartContainer(container models.Container) {
 	if err != nil {
 		log.Printf("Error stopping container %s: %v", container.ID, err)
 	}
-	
+
 	ctx, cancel = context.WithTimeout(context.Background(), 30*time.Second)
 	err = w.runtime.StartContainer(ctx, container.ID)
 	cancel()
