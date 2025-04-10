@@ -29,6 +29,6 @@ func RegisterRoutes(router *mux.Router, store *store.BoltStore, runtime runtime.
 	router.HandleFunc("/api/services/{id}", h.HandleGet).Methods("GET")
 	router.HandleFunc("/api/services/{id}", h.HandleUpdate).Methods("PUT")
 	router.HandleFunc("/api/services/{id}", h.HandleDelete).Methods("DELETE")
-	router.HandleFunc("/api/services/{id}/scale", h.HandleScale).Methods("POST")
+	router.HandleFunc("/api/services/{id}/scale", h.HandlerScale).Methods("POST")
 	router.HandleFunc("/api/services/{id}/status", h.HandleStatus).Methods("GET")
 }
