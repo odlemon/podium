@@ -7,6 +7,7 @@ import (
 	"podium/internal/api"
 	"podium/internal/health"
 	"podium/internal/runtime"
+	"podium/internal/service"
 	"podium/internal/store"
 )
 
@@ -24,7 +25,13 @@ func main() {
 		log.Fatalf("Failed to create Docker runtime: %v", err)
 	}
 	
-	server := api.NewServer(boltStore, dockerRuntime)
+	serviceManager := service.NewManager(dockerRuntime, boltStore)
+	
+	reconciler := service.NewReconciler(serviceManager, 30*time.Second)
+	reconciler.Start()
+	defer reconciler.Stop()
+	
+	server := api.NewServer(boltStore, dockerRuntime, serviceManager)
 	
 	healthWorker := health.NewWorker(boltStore, dockerRuntime, 30*time.Second, 3)
 	healthWorker.Start()
