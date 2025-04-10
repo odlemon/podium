@@ -8,20 +8,23 @@ import (
 	"podium/internal/api/handlers/container"
 	"podium/internal/runtime"
 	"podium/internal/store"
-	"podium/internal/api/handlers/service"
+	"podium/internal/service"
+	servicehandler "podium/internal/api/handlers/service"
 )
 
 type Server struct {
 	router *mux.Router
 	store  *store.BoltStore
 	runtime runtime.Runtime
+	serviceManager service.Manager
 }
 
-func NewServer(store *store.BoltStore, runtime runtime.Runtime) *Server {
+func NewServer(store *store.BoltStore, runtime runtime.Runtime, serviceManager service.Manager) *Server {
 	s := &Server{
 		router: mux.NewRouter(),
 		store:  store,
 		runtime: runtime,
+		serviceManager: serviceManager,
 	}
 	s.setupRoutes()
 	return s
@@ -42,7 +45,7 @@ func (s *Server) setupRoutes() {
 	s.router.HandleFunc("/api/containers/{id}/logs", containerHandler.HandleLogs).Methods("GET")
 	s.router.HandleFunc("/api/containers/{id}/health", containerHandler.HandleHealth).Methods("GET")
 
-	service.RegisterRoutes(s.router, s.store, s.runtime)
+	servicehandler.RegisterRoutes(s.router, s.store, s.runtime, s.serviceManager)
 }
 
 func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
