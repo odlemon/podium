@@ -226,3 +226,26 @@ func (s *BoltStore) GetServiceByName(name string) (models.Service, error) {
 	
 	return service, err
 }
+
+
+func (s *BoltStore) GetContainersByStatus(status string) ([]models.Container, error) {
+	var containers []models.Container
+	
+	err := s.db.View(func(tx *bolt.Tx) error {
+		b := tx.Bucket([]byte("containers"))
+		
+		return b.ForEach(func(k, v []byte) error {
+			var container models.Container
+			if err := json.Unmarshal(v, &container); err != nil {
+				return fmt.Errorf("failed to unmarshal container: %w", err)
+			}
+			
+			if container.Status == status {
+				containers = append(containers, container)
+			}
+			return nil
+		})
+	})
+	
+	return containers, err
+}
